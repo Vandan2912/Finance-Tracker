@@ -81,7 +81,7 @@ function Dashboard() {
 
   return (
     <div className="p-8 bg-">
-      <h2 className="font-bold text-4xl">Hi, {user?.username} 👋</h2>
+      <h2 className="font-bold text-4xl">Hi, Hunny 👋</h2>
       <p className="text-gray-500">Here's what happenning with your money, Lets Manage your expense</p>
 
       <CardInfo budgetList={budgetList} incomeList={incomeList} />
