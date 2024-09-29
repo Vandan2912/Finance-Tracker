@@ -10,6 +10,7 @@ import {
   text,
   mysqlEnum,
   pgEnum,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const Users = pgTable("users", {
@@ -43,7 +44,11 @@ export const Expenses = pgTable("expenses", {
   createdAt: varchar("createdAt").notNull(),
 });
 
-export const statusEnum = pgEnum("status", ["active", "completed", "cancelled"]);
+export const statusEnum = pgEnum("status", [
+  "active",
+  "completed",
+  "cancelled",
+]);
 
 export const savingsGoals = pgTable("savings_goals", {
   id: serial("id").primaryKey(),
@@ -53,7 +58,9 @@ export const savingsGoals = pgTable("savings_goals", {
   name: varchar("name", { length: 100 }).notNull(),
   icon: varchar("icon"),
   targetAmount: decimal("target_amount", { precision: 10, scale: 2 }).notNull(),
-  currentAmount: decimal("current_amount", { precision: 10, scale: 2 }).default("0"),
+  currentAmount: decimal("current_amount", { precision: 10, scale: 2 }).default(
+    "0"
+  ),
   startDate: date("start_date").notNull(),
   targetDate: date("target_date").notNull(),
   status: statusEnum("status").default("active"),
@@ -69,5 +76,18 @@ export const savingsContributions = pgTable("savings_contributions", {
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   date: date("date").notNull(),
   notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const bills = pgTable("bills", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  name: varchar("name").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  dueDay: integer("due_day").notNull(), // Day of the month when the bill is due
+  isPaid: boolean("is_paid").default(false),
+  paidDate: date("paid_date"),
+  category: varchar("category"),
+  notes: varchar("notes"),
   createdAt: timestamp("created_at").defaultNow(),
 });

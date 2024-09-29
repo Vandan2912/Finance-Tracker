@@ -1,7 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { LayoutGrid, PiggyBank, ReceiptText, CircleDollarSign, PiggyBankIcon, LogOutIcon } from "lucide-react";
+import {
+  LayoutGrid,
+  PiggyBank,
+  ReceiptText,
+  CircleDollarSign,
+  PiggyBankIcon,
+  LogOutIcon,
+  ReceiptIndianRupee,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,12 +48,12 @@ function SideNav() {
       icon: PiggyBankIcon,
       path: "/dashboard/savingsGoals",
     },
-    // {
-    //   id: 2,
-    //   name: "Debts",
-    //   icon: TrendingDownIcon,
-    //   path: "/dashboard/debts",
-    // },
+    {
+      id: 5,
+      name: "Bills",
+      icon: ReceiptIndianRupee,
+      path: "/dashboard/bills",
+    },
   ];
   const router = useRouter();
   const path = usePathname();
@@ -93,7 +101,9 @@ function SideNav() {
         <div className="flex w-full justify-between">
           <Avatar>
             <AvatarImage src="/avatar.jpg" />
-            <AvatarFallback>{user?.username?.charAt(0).toUpperCase() || "H"}</AvatarFallback>
+            <AvatarFallback>
+              {user?.username?.charAt(0).toUpperCase() || "H"}
+            </AvatarFallback>
           </Avatar>
 
           <Button
