@@ -116,13 +116,13 @@ function SignUpForm({ setType }) {
             </div>
           </div>
 
-          <button className="w-full hover:bg-[#860e35] border hover:shadow-md">
+          <button className="w-full bg-[#302b63] hover:bg-[#0f0c29] hover:shadow-md">
             Sign Up
           </button>
           <div className="flex justify-center gap-1 mt-3 md:hidden">
             Don’t have an account?{" "}
             <div
-              className="font-bold text-[#EB3C75] cursor-pointer"
+              className="font-normal hover:font-semibold text-[#302b63] cursor-pointer"
               onClick={() => {
                 setType("signIn");
               }}

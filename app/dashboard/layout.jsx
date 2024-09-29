@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 function DashboardLayout({ children }) {
   const router = useRouter();
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  const [user, setUser] = useState();
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user") || {}));

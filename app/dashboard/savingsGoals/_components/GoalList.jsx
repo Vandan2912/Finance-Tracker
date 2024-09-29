@@ -2,7 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { db } from "@/utils/dbConfig";
 import { desc, eq, getTableColumns, sql } from "drizzle-orm";
-import { Budgets, Expenses, savingsGoals } from "@/utils/schema";
+import {
+  Budgets,
+  Expenses,
+  savingsContributions,
+  savingsGoals,
+} from "@/utils/schema";
 import CreateGoal from "./CreateGoal";
 import GoalItem from "./GoalItem";
 
@@ -21,20 +26,23 @@ function GoalList() {
    * used to get budget List
    */
   const getBudgetList = async () => {
-    // const result = await db
-    //   .select({
-    //     ...getTableColumns(Budgets),
-    //     totalSpend: sql`sum(${Expenses.amount})`.mapWith(Number),
-    //     totalItem: sql`count(${Expenses.id})`.mapWith(Number),
-    //   })
-    //   .from(Budgets)
-    //   .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-    //   .where(eq(Budgets.createdBy, user?.email))
-    //   .groupBy(Budgets.id)
-    //   .orderBy(desc(Budgets.id));
-    // setGoalList(result);
-
-    const fetchedGoals = await db.select().from(savingsGoals).where(eq(savingsGoals.userId, user?.id));
+    const fetchedGoals = await db
+      .select({
+        ...getTableColumns(savingsGoals),
+        totalContributed: sql`sum(${savingsContributions.amount})`.mapWith(
+          Number
+        ),
+        totalContributions: sql`count(${savingsContributions.id})`.mapWith(
+          Number
+        ),
+      })
+      .from(savingsGoals)
+      .leftJoin(
+        savingsContributions,
+        eq(savingsGoals.id, savingsContributions.savingsGoalId)
+      )
+      .where(eq(savingsGoals.userId, user?.id))
+      .groupBy(savingsGoals.id);
     setGoalList(fetchedGoals);
   };
 

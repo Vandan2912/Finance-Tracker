@@ -15,6 +15,8 @@ function GoalItem({ goal }) {
     return diffDays;
   };
 
+  console.log("goal", goal);
+
   return (
     <Link href={"/dashboard/savingsGoals/" + goal?.id}>
       <div
@@ -32,16 +34,25 @@ function GoalItem({ goal }) {
             </h2>
             <div>
               <h2 className="font-bold">{goal.name}</h2>
-              <h2 className="text-sm text-gray-500">{goal.totalContributions} Contributions</h2>
+              <h2 className="text-sm text-gray-500">
+                {goal.totalContributions} Contributions
+              </h2>
             </div>
           </div>
-          <h2 className="font-bold text-primary text-lg"> ₹{goal.targetAmount}</h2>
+          <h2 className="font-bold text-primary text-lg">
+            {" "}
+            ₹{goal.targetAmount}
+          </h2>
         </div>
 
         <div className="mt-5">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xs text-slate-400">₹{goal.totalContributed ? goal.totalContributed : 0} Saved</h2>
-            <h2 className="text-xs text-slate-400">₹{goal.targetAmount - goal.totalContributed} Remaining</h2>
+            <h2 className="text-xs text-slate-400">
+              ₹{goal.totalContributed ? goal.totalContributed : 0} Saved
+            </h2>
+            <h2 className="text-xs text-slate-400">
+              ₹{goal.targetAmount - goal.totalContributed} Remaining
+            </h2>
           </div>
           <div
             className="w-full
@@ -56,7 +67,9 @@ function GoalItem({ goal }) {
             ></div>
           </div>
         </div>
-        <div className="mt-2 text-xs text-right text-slate-400">{daysRemaining()} days remaining</div>
+        <div className="mt-2 text-xs text-right text-slate-400">
+          {daysRemaining()} days remaining
+        </div>
       </div>
     </Link>
   );

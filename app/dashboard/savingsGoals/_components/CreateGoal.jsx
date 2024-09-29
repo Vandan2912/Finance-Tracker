@@ -61,7 +61,7 @@ function CreateGoal({ refreshData }) {
           <div
             className="bg-slate-100 p-10 rounded-2xl
             items-center flex flex-col border-2 border-dashed
-            cursor-pointer hover:shadow-md"
+            cursor-pointer hover:shadow-md h-[170px] justify-center"
           >
             <h2 className="text-3xl">+</h2>
             <h2>Create New Goal</h2>
@@ -72,7 +72,11 @@ function CreateGoal({ refreshData }) {
             <DialogTitle>Create New Goal</DialogTitle>
             <DialogDescription>
               <div className="mt-5">
-                <Button variant="outline" className="text-lg" onClick={() => setOpenEmojiPicker(!openEmojiPicker)}>
+                <Button
+                  variant="outline"
+                  className="text-lg"
+                  onClick={() => setOpenEmojiPicker(!openEmojiPicker)}
+                >
                   {emojiIcon}
                 </Button>
                 <div className="absolute z-20">
@@ -86,19 +90,34 @@ function CreateGoal({ refreshData }) {
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Goal Name</h2>
-                  <Input placeholder="e.g. Dream Car" onChange={(e) => setName(e.target.value)} />
+                  <Input
+                    placeholder="e.g. Dream Car"
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Goal Amount</h2>
-                  <Input type="number" placeholder="e.g. ₹2500000" onChange={(e) => setAmount(e.target.value)} />
+                  <Input
+                    type="number"
+                    placeholder="e.g. ₹2500000"
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Start Date</h2>
-                  <Input type="date" placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
+                  <Input
+                    type="date"
+                    placeholder="Start Date"
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Target Date</h2>
-                  <Input type="date" placeholder="Target Date" onChange={(e) => setTargetDate(e.target.value)} />
+                  <Input
+                    type="date"
+                    placeholder="Target Date"
+                    onChange={(e) => setTargetDate(e.target.value)}
+                  />
                 </div>
               </div>
             </DialogDescription>
