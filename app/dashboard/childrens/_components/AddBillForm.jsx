@@ -16,7 +16,7 @@ import EmojiPicker from "emoji-picker-react";
 import { useState } from "react";
 
 export default function AddBillForm({ onAdd }) {
-  const [emojiIcon, setEmojiIcon] = useState("💡");
+  const [emojiIcon, setEmojiIcon] = useState("👦🏻");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
   const [Name, setName] = useState("");
 
@@ -27,7 +27,7 @@ export default function AddBillForm({ onAdd }) {
     // e.preventDefault();
     onAdd({ name: Name, icon: emojiIcon });
     setName("");
-    setEmojiIcon("💡");
+    setEmojiIcon("👦🏻");
   };
 
   return (
@@ -40,12 +40,12 @@ export default function AddBillForm({ onAdd }) {
           cursor-pointer hover:shadow-md h-[170px] justify-center"
           >
             <h2 className="text-3xl">+</h2>
-            <h2>Create New Bill</h2>
+            <h2>Add Child</h2>
           </div>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Bill</DialogTitle>
+            <DialogTitle>Add Child</DialogTitle>
             <DialogDescription>
               <div className="mt-5">
                 <Button
@@ -65,9 +65,9 @@ export default function AddBillForm({ onAdd }) {
                   />
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Bill Name</h2>
+                  <h2 className="text-black font-medium my-1">Child Name</h2>
                   <Input
-                    placeholder="e.g. Electricity Bill"
+                    placeholder="e.g. Shreeyansh"
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -81,7 +81,7 @@ export default function AddBillForm({ onAdd }) {
                 onClick={() => handleSubmit()}
                 className="mt-5 w-full rounded-full"
               >
-                Create Bill
+                Add Child
               </Button>
             </DialogClose>
           </DialogFooter>

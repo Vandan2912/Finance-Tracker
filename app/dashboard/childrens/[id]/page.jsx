@@ -22,7 +22,12 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import EditBill from "../_components/EditBill";
-import { billPayments, bills } from "@/utils/schema";
+import {
+  billPayments,
+  bills,
+  childrenAccounts,
+  childrenExpenses,
+} from "@/utils/schema";
 
 function BillScreen({ params }) {
   const [user, setUser] = useState(localStorage.getItem("user"));
@@ -31,54 +36,58 @@ function BillScreen({ params }) {
     setUser(JSON.parse(localStorage.getItem("user") || {}));
   }, [localStorage.getItem("user")]);
 
-  const [billInfo, setBillInfo] = useState();
-  const [paymentsList, setPaymentsList] = useState([]);
+  const [childAccountInfo, setChildAccountInfo] = useState();
+  const [expensesList, setExpensesList] = useState([]);
   const route = useRouter();
 
   useEffect(() => {
-    user && getBillInfo();
+    user && getChildAccountInfo();
   }, [user]);
 
-  /**
-   * Get Bill Information
-   */
-  const getBillInfo = async () => {
+  const getChildAccountInfo = async () => {
     const result = await db
       .select({
-        ...getTableColumns(bills),
-        totalPaid: sql`sum(${billPayments.amount})`.mapWith(Number),
-        totalPayments: sql`count(${billPayments.id})`.mapWith(Number),
+        ...getTableColumns(childrenAccounts),
+        totalSpent: sql`sum(${childrenExpenses.amount})`.mapWith(Number),
+        totalExpenses: sql`count(${childrenExpenses.id})`.mapWith(Number),
       })
-      .from(bills)
-      .leftJoin(billPayments, eq(bills.id, billPayments.billId))
-      .where(eq(bills.userId, user?.id)) // Assuming you're using userId instead of email
-      .where(eq(bills.id, params.id))
-      .groupBy(bills.id);
+      .from(childrenAccounts)
+      .leftJoin(
+        childrenExpenses,
+        eq(childrenAccounts.id, childrenExpenses.childAccountId)
+      )
+      .where(eq(childrenAccounts.parentUserId, user?.id))
+      .where(eq(childrenAccounts.id, params.id))
+      .groupBy(childrenAccounts.id);
 
-    setBillInfo(result[0]);
-    getPaymentsList();
+    setChildAccountInfo(result[0]);
+    getExpensesList();
   };
 
-  /**
-   * Get Latest Payments
-   */
-  const getPaymentsList = async () => {
+  const getExpensesList = async () => {
     const result = await db
       .select()
-      .from(billPayments)
-      .where(eq(billPayments.billId, params.id))
-      .orderBy(desc(billPayments.paymentDate));
+      .from(childrenExpenses)
+      .where(eq(childrenExpenses.childAccountId, params.id))
+      .orderBy(desc(childrenExpenses.date));
 
-    setPaymentsList(result);
+    setExpensesList(result);
   };
-  /**
-   * Used to Delete goal
-   */
-  const deleteGoal = async () => {
-    const deleteBill = await db.delete(bills).where(eq(bills.id, params.id));
 
-    toast("Bill Deleted!");
-    route.replace("/dashboard/bills");
+  const deleteChildAccount = async () => {
+    const deleteExpensesResult = await db
+      .delete(childrenExpenses)
+      .where(eq(childrenExpenses.childAccountId, parseInt(params.id)))
+      .returning();
+
+    if (deleteExpensesResult) {
+      const result = await db
+        .delete(childrenAccounts)
+        .where(eq(childrenAccounts.id, parseInt(params.id)))
+        .returning();
+    }
+    toast("Child Account Deleted!");
+    route.replace("/dashboard/children");
   };
 
   return (
@@ -86,10 +95,13 @@ function BillScreen({ params }) {
       <h2 className="text-2xl font-bold gap-2 flex justify-between items-center">
         <span className="flex gap-2 items-center">
           <ArrowLeft onClick={() => route.back()} className="cursor-pointer" />
-          My Goal
+          Child
         </span>
         <div className="flex gap-2 items-center">
-          <EditBill goalInfo={billInfo} refreshData={() => getBillInfo()} />
+          <EditBill
+            goalInfo={childAccountInfo}
+            refreshData={() => getChildAccountInfo()}
+          />
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -108,7 +120,7 @@ function BillScreen({ params }) {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => deleteGoal()}>
+                <AlertDialogAction onClick={() => deleteChildAccount()}>
                   Continue
                 </AlertDialogAction>
               </AlertDialogFooter>
@@ -120,8 +132,8 @@ function BillScreen({ params }) {
         className="grid grid-cols-1 
         md:grid-cols-2 mt-6 gap-5"
       >
-        {billInfo ? (
-          <BillItem bill={billInfo} />
+        {childAccountInfo ? (
+          <BillItem child={childAccountInfo} />
         ) : (
           <div
             className="h-[150px] w-full bg-slate-200 
@@ -131,13 +143,13 @@ function BillScreen({ params }) {
         <AddBill
           billid={params.id}
           user={user}
-          refreshData={() => getBillInfo()}
+          refreshData={() => getChildAccountInfo()}
         />
       </div>
       <div className="mt-4">
         <ContributionListTable
-          contributionsList={paymentsList}
-          refreshData={() => getBillInfo()}
+          expensesList={expensesList}
+          refreshData={() => getChildAccountInfo()}
         />
       </div>
     </div>

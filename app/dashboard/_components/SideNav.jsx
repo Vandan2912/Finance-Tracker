@@ -9,6 +9,7 @@ import {
   PiggyBankIcon,
   LogOutIcon,
   ReceiptIndianRupee,
+  Baby,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -53,6 +54,12 @@ function SideNav() {
       name: "Bills",
       icon: ReceiptIndianRupee,
       path: "/dashboard/bills",
+    },
+    {
+      id: 5,
+      name: "Childrens",
+      icon: Baby,
+      path: "/dashboard/childrens",
     },
   ];
   const router = useRouter();

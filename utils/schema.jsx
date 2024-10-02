@@ -106,3 +106,31 @@ export const billPayments = pgTable(
     };
   }
 );
+
+export const childrenAccounts = pgTable("children_accounts", {
+  id: serial("id").primaryKey(),
+  parentUserId: varchar("parent_user_id").notNull(),
+  name: varchar("name").notNull(),
+  icon: varchar("icon"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const childrenExpenses = pgTable(
+  "children_expenses",
+  {
+    id: serial("id").primaryKey(),
+    childAccountId: integer("child_account_id").notNull(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    description: varchar("description").notNull(),
+    date: date("date").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => {
+    return {
+      childAccountIdFk: foreignKey({
+        columns: [table.childAccountId],
+        foreignColumns: [childrenAccounts.id],
+      }),
+    };
+  }
+);
