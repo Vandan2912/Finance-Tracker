@@ -1,60 +1,36 @@
 // app/components/AddBillForm.jsx
 "use client";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import EmojiPicker from "emoji-picker-react";
 import { useState } from "react";
 
 export default function AddBillForm({ onAdd }) {
-  const [billData, setBillData] = useState({
-    name: "",
-    amount: "",
-    dueDay: "",
-    category: "",
-    notes: "",
-  });
+  const [emojiIcon, setEmojiIcon] = useState("💡");
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+  const [Name, setName] = useState("");
 
+  /**
+   * Used to Create New Bill Section
+   */
   const handleSubmit = (e) => {
-    e.preventDefault();
-    onAdd(billData);
-    setBillData({ name: "", amount: "", dueDay: "", category: "", notes: "" });
+    // e.preventDefault();
+    onAdd({ name: Name, icon: emojiIcon });
+    setName("");
+    setEmojiIcon("💡");
   };
 
   return (
-    // <form onSubmit={handleSubmit}>
-    //   <input
-    //     type="text"
-    //     placeholder="Bill Name"
-    //     value={billData.name}
-    //     onChange={(e) => setBillData({ ...billData, name: e.target.value })}
-    //     required
-    //   />
-    //   <input
-    //     type="number"
-    //     placeholder="Amount"
-    //     value={billData.amount}
-    //     onChange={(e) => setBillData({ ...billData, amount: e.target.value })}
-    //     required
-    //   />
-    //   <input
-    //     type="number"
-    //     placeholder="Due Day (1-31)"
-    //     value={billData.dueDay}
-    //     onChange={(e) => setBillData({ ...billData, dueDay: e.target.value })}
-    //     min="1"
-    //     max="31"
-    //     required
-    //   />
-    //   <input
-    //     type="text"
-    //     placeholder="Category"
-    //     value={billData.category}
-    //     onChange={(e) => setBillData({ ...billData, category: e.target.value })}
-    //   />
-    //   <textarea
-    //     placeholder="Notes"
-    //     value={billData.notes}
-    //     onChange={(e) => setBillData({ ...billData, notes: e.target.value })}
-    //   />
-    //   <button type="submit">Add Bill</button>
-    // </form>
     <div>
       <Dialog>
         <DialogTrigger asChild>
@@ -91,16 +67,8 @@ export default function AddBillForm({ onAdd }) {
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Budget Name</h2>
                   <Input
-                    placeholder="e.g. Home Decor"
+                    placeholder="e.g. Electricity Bill"
                     onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Budget Amount</h2>
-                  <Input
-                    type="number"
-                    placeholder="e.g. 5000₹"
-                    onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>
               </div>
@@ -109,8 +77,8 @@ export default function AddBillForm({ onAdd }) {
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
               <Button
-                disabled={!(name && amount)}
-                onClick={() => onCreateBudget()}
+                disabled={!Name}
+                onClick={() => handleSubmit()}
                 className="mt-5 w-full rounded-full"
               >
                 Create Budget

@@ -49,6 +49,7 @@ function CreateBudget({ refreshData }) {
       toast("New Budget Created!");
     }
   };
+
   return (
     <div>
       <Dialog>

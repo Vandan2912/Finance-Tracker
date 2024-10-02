@@ -9,12 +9,11 @@ import BillItem from "./BillItem";
 
 export default function BillsList() {
   const [billsList, setBillsList] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    // In a real app, you'd get the user from your authentication system
-    setUser({ id: "123", email: "user@example.com" });
-  }, []);
+    setUser(JSON.parse(localStorage.getItem("user") || {}));
+  }, [localStorage.getItem("user")]);
 
   useEffect(() => {
     if (user) {
@@ -65,27 +64,16 @@ export default function BillsList() {
         className="grid grid-cols-1
       md:grid-cols-2 lg:grid-cols-3 gap-5"
       >
-        {/* <CreateBudget refreshData={() => getBudgetList()} /> */}
         <AddBillForm onAdd={addBill} />
-        {/* {budgetList?.length > 0
-          ? budgetList.map((budget, index) => (
-              <BudgetItem budget={budget} key={index} />
-            ))
+        {billsList?.length > 0
+          ? billsList.map((bill, index) => <BillItem bill={bill} />)
           : [1, 2, 3, 4, 5].map((item, index) => (
               <div
                 key={index}
                 className="w-full bg-slate-200 rounded-lg
       h-[150px] animate-pulse"
               ></div>
-            ))} */}
-        {billsList.map((bill) => (
-          <BillItem
-            key={bill.id}
-            bill={bill}
-            onUpdate={updateBill}
-            onDelete={deleteBill}
-          />
-        ))}
+            ))}
       </div>
     </div>
   );

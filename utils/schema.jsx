@@ -8,9 +8,9 @@ import {
   date,
   timestamp,
   text,
-  mysqlEnum,
   pgEnum,
   boolean,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 
 export const Users = pgTable("users", {
@@ -83,11 +83,26 @@ export const bills = pgTable("bills", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull(),
   name: varchar("name").notNull(),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
-  dueDay: integer("due_day").notNull(), // Day of the month when the bill is due
-  isPaid: boolean("is_paid").default(false),
-  paidDate: date("paid_date"),
-  category: varchar("category"),
-  notes: varchar("notes"),
+  icon: varchar("icon"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const billPayments = pgTable(
+  "bill_payments",
+  {
+    id: serial("id").primaryKey(),
+    billId: integer("bill_id").notNull(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    paymentDate: date("payment_date").notNull(),
+    notes: varchar("notes"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => {
+    return {
+      billIdFk: foreignKey({
+        columns: [table.billId],
+        foreignColumns: [bills.id],
+      }),
+    };
+  }
+);
