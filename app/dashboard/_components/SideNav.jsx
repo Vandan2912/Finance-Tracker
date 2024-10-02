@@ -10,6 +10,7 @@ import {
   LogOutIcon,
   ReceiptIndianRupee,
   Baby,
+  Users,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -56,10 +57,16 @@ function SideNav() {
       path: "/dashboard/bills",
     },
     {
-      id: 5,
+      id: 6,
       name: "Childrens",
       icon: Baby,
       path: "/dashboard/childrens",
+    },
+    {
+      id: 7,
+      name: "Family",
+      icon: Users,
+      path: "/dashboard/family",
     },
   ];
   const router = useRouter();

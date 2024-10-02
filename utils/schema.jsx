@@ -134,3 +134,27 @@ export const childrenExpenses = pgTable(
     };
   }
 );
+
+export const familyLinks = pgTable(
+  "family_links",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").notNull(), // Changed to integer
+    linkedUserId: integer("linked_user_id").notNull(), // Changed to integer
+    relationshipType: varchar("relationship_type").notNull(),
+    status: varchar("status", { length: 20 }).notNull().default("pending"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => {
+    return {
+      userIdFk: foreignKey({
+        columns: [table.userId],
+        foreignColumns: [Users.id],
+      }),
+      linkedUserIdFk: foreignKey({
+        columns: [table.linkedUserId],
+        foreignColumns: [Users.id],
+      }),
+    };
+  }
+);
