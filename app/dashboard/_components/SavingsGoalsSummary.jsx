@@ -3,7 +3,7 @@ import React from "react";
 function SavingsGoalsSummary({ goals }) {
   console.log("goals", goals);
   return (
-    <div className="border rounded-2xl p-5">
+    <div className="border rounded-2xl p-5 my-5">
       <h2 className="font-bold text-lg mb-3">Savings Goals</h2>
       {goals.map((goal) => (
         <div key={goal.id} className="mb-3">

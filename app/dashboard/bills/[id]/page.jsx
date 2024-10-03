@@ -86,7 +86,7 @@ function BillScreen({ params }) {
       <h2 className="text-2xl font-bold gap-2 flex justify-between items-center">
         <span className="flex gap-2 items-center">
           <ArrowLeft onClick={() => route.back()} className="cursor-pointer" />
-          My Goal
+          My Bill
         </span>
         <div className="flex gap-2 items-center">
           <EditBill goalInfo={billInfo} refreshData={() => getBillInfo()} />
@@ -101,16 +101,13 @@ function BillScreen({ params }) {
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your current goal along with contributions and remove your
-                  data from our servers.
+                  This action cannot be undone. This will permanently delete your current goal along with contributions
+                  and remove your data from our servers.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => deleteGoal()}>
-                  Continue
-                </AlertDialogAction>
+                <AlertDialogAction onClick={() => deleteGoal()}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -128,17 +125,10 @@ function BillScreen({ params }) {
             rounded-lg animate-pulse"
           ></div>
         )}
-        <AddBill
-          billid={params.id}
-          user={user}
-          refreshData={() => getBillInfo()}
-        />
+        <AddBill billid={params.id} user={user} refreshData={() => getBillInfo()} />
       </div>
       <div className="mt-4">
-        <ContributionListTable
-          contributionsList={paymentsList}
-          refreshData={() => getBillInfo()}
-        />
+        <ContributionListTable contributionsList={paymentsList} refreshData={() => getBillInfo()} />
       </div>
     </div>
   );
