@@ -13,11 +13,15 @@ export default function FamilyLinkManager() {
   const [linkedAccounts, setLinkedAccounts] = useState([]);
   const [newLinkEmail, setNewLinkEmail] = useState("");
   const [newLinkRelation, setNewLinkRelation] = useState("");
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     fetchLinkRequests();
@@ -34,12 +38,7 @@ export default function FamilyLinkManager() {
       })
       .from(familyLinks)
       .innerJoin(Users, eq(Users.id, familyLinks.userId))
-      .where(
-        and(
-          eq(familyLinks.linkedUserId, user.id),
-          eq(familyLinks.status, "pending")
-        )
-      );
+      .where(and(eq(familyLinks.linkedUserId, user.id), eq(familyLinks.status, "pending")));
     setLinkRequests(requests);
   };
 
@@ -51,19 +50,10 @@ export default function FamilyLinkManager() {
         relationshipType: familyLinks.relationshipType,
       })
       .from(familyLinks)
-      .innerJoin(
-        Users,
-        or(
-          eq(Users.id, familyLinks.linkedUserId),
-          eq(Users.id, familyLinks.userId)
-        )
-      )
+      .innerJoin(Users, or(eq(Users.id, familyLinks.linkedUserId), eq(Users.id, familyLinks.userId)))
       .where(
         and(
-          or(
-            eq(familyLinks.userId, user.id),
-            eq(familyLinks.linkedUserId, user.id)
-          ),
+          or(eq(familyLinks.userId, user.id), eq(familyLinks.linkedUserId, user.id)),
           eq(familyLinks.status, "accepted")
         )
       )
@@ -79,10 +69,7 @@ export default function FamilyLinkManager() {
 
   const sendLinkRequest = async () => {
     try {
-      const [FamilyUser] = await db
-        .select()
-        .from(Users)
-        .where(eq(Users.email, newLinkEmail));
+      const [FamilyUser] = await db.select().from(Users).where(eq(Users.email, newLinkEmail));
 
       if (!FamilyUser) {
         toast.error("User not found");
@@ -155,24 +142,15 @@ export default function FamilyLinkManager() {
       <div className="mb-6">
         <h3 className="text-xl font-semibold mb-2">Pending Requests</h3>
         {linkRequests.map((request) => (
-          <div
-            key={request.id}
-            className="flex items-center justify-between mb-2"
-          >
+          <div key={request.id} className="flex items-center justify-between mb-2">
             <span>
               {request.email} ({request.relationshipType})
             </span>
             <div>
-              <Button
-                onClick={() => respondToRequest(request.id, true)}
-                className="mr-2"
-              >
+              <Button onClick={() => respondToRequest(request.id, true)} className="mr-2">
                 Accept
               </Button>
-              <Button
-                onClick={() => respondToRequest(request.id, false)}
-                variant="destructive"
-              >
+              <Button onClick={() => respondToRequest(request.id, false)} variant="destructive">
                 Reject
               </Button>
             </div>

@@ -12,8 +12,12 @@ export default function BillsList() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -23,10 +27,7 @@ export default function BillsList() {
 
   const fetchBills = async () => {
     if (!user) return;
-    const fetchedBills = await db
-      .select()
-      .from(bills)
-      .where(eq(bills.userId, user.id));
+    const fetchedBills = await db.select().from(bills).where(eq(bills.userId, user.id));
     setBillsList(fetchedBills);
   };
 

@@ -26,11 +26,7 @@ function SignInForm({ setType }) {
     const { email, password } = state;
 
     try {
-      const users = await db
-        .select()
-        .from(Users)
-        .where(eq(Users.email, email))
-        .limit(1);
+      const users = await db.select().from(Users).where(eq(Users.email, email)).limit(1);
 
       if (users.length === 0) {
         toast.error("Invalid email or password");
@@ -46,7 +42,7 @@ function SignInForm({ setType }) {
       }
       const userString = encodeURIComponent(JSON.stringify(user));
       document.cookie = `user=${userString}; path=/; max-age=86400`;
-      localStorage.setItem("user", JSON.stringify(user));
+      window && window.localStorage.setItem("user", JSON.stringify(user));
       toast.success("Signed in successfully");
       router.push("/dashboard");
     } catch (error) {
@@ -67,9 +63,7 @@ function SignInForm({ setType }) {
       <div className="mx-5 md:mx-20 p-7 border border-gray-300 min-w-[80%] lg:min-w-[60%] rounded-2xl">
         <form onSubmit={handleOnSubmit}>
           <h1 className="text-3xl font-bold">Sign in</h1>
-          <p className="text-base font-normal text-black">
-            Welcome back to your account
-          </p>
+          <p className="text-base font-normal text-black">Welcome back to your account</p>
           {/* <span>or use your account</span> */}
           <input
             type="email"
@@ -90,9 +84,7 @@ function SignInForm({ setType }) {
           <a href="#" className="hover:text-[#302b63] duration-300">
             Forgot your password?
           </a>
-          <button className="w-full bg-[#302b63] hover:bg-[#0f0c29] border-0 hover:shadow-md">
-            Sign In
-          </button>
+          <button className="w-full bg-[#302b63] hover:bg-[#0f0c29] border-0 hover:shadow-md">Sign In</button>
           <div className="social-container w-full">
             <div className="flex justify-center gap-1 mt-3 md:hidden">
               Don’t have an account?{" "}

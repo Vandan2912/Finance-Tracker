@@ -27,8 +27,12 @@ function CreateGoal({ refreshData }) {
   const [targetDate, setTargetDate] = useState();
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   const onCreateBudget = async () => {
     if (user.id) {
@@ -72,11 +76,7 @@ function CreateGoal({ refreshData }) {
             <DialogTitle>Create New Goal</DialogTitle>
             <DialogDescription>
               <div className="mt-5">
-                <Button
-                  variant="outline"
-                  className="text-lg"
-                  onClick={() => setOpenEmojiPicker(!openEmojiPicker)}
-                >
+                <Button variant="outline" className="text-lg" onClick={() => setOpenEmojiPicker(!openEmojiPicker)}>
                   {emojiIcon}
                 </Button>
                 <div className="absolute z-20">
@@ -90,34 +90,19 @@ function CreateGoal({ refreshData }) {
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Goal Name</h2>
-                  <Input
-                    placeholder="e.g. Dream Car"
-                    onChange={(e) => setName(e.target.value)}
-                  />
+                  <Input placeholder="e.g. Dream Car" onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Goal Amount</h2>
-                  <Input
-                    type="number"
-                    placeholder="e.g. ₹2500000"
-                    onChange={(e) => setAmount(e.target.value)}
-                  />
+                  <Input type="number" placeholder="e.g. ₹2500000" onChange={(e) => setAmount(e.target.value)} />
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Start Date</h2>
-                  <Input
-                    type="date"
-                    placeholder="Start Date"
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
+                  <Input type="date" placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Target Date</h2>
-                  <Input
-                    type="date"
-                    placeholder="Target Date"
-                    onChange={(e) => setTargetDate(e.target.value)}
-                  />
+                  <Input type="date" placeholder="Target Date" onChange={(e) => setTargetDate(e.target.value)} />
                 </div>
               </div>
             </DialogDescription>

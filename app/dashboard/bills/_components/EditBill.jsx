@@ -26,11 +26,15 @@ function EditBill({ goalInfo, refreshData }) {
   const [name, setName] = useState();
   const [targetAmount, setTargetAmount] = useState();
   const [targetDate, setTargetDate] = useState();
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     if (goalInfo) {
@@ -77,11 +81,7 @@ function EditBill({ goalInfo, refreshData }) {
             <DialogTitle>Update Goal</DialogTitle>
             <DialogDescription>
               <div className="mt-5">
-                <Button
-                  variant="outline"
-                  className="text-lg"
-                  onClick={() => setOpenEmojiIcon(!openEmojiPicker)}
-                >
+                <Button variant="outline" className="text-lg" onClick={() => setOpenEmojiIcon(!openEmojiPicker)}>
                   {emojiIcon}
                 </Button>
                 <div className="absolute z-20">

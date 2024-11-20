@@ -12,8 +12,12 @@ function BudgetList() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     user && getBudgetList();

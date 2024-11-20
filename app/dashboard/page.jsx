@@ -31,8 +31,12 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -77,9 +81,7 @@ function Dashboard() {
     const result = await db
       .select({
         ...getTableColumns(Incomes),
-        totalAmount: sql`SUM(CAST(${Incomes.amount} AS NUMERIC))`.mapWith(
-          Number
-        ),
+        totalAmount: sql`SUM(CAST(${Incomes.amount} AS NUMERIC))`.mapWith(Number),
       })
       .from(Incomes)
       .where(eq(Incomes.createdBy, user.email))
@@ -106,15 +108,10 @@ function Dashboard() {
     const result = await db
       .select({
         ...getTableColumns(savingsGoals),
-        totalContributed: sql`sum(${savingsContributions.amount})`.mapWith(
-          Number
-        ),
+        totalContributed: sql`sum(${savingsContributions.amount})`.mapWith(Number),
       })
       .from(savingsGoals)
-      .leftJoin(
-        savingsContributions,
-        eq(savingsGoals.id, savingsContributions.savingsGoalId)
-      )
+      .leftJoin(savingsContributions, eq(savingsGoals.id, savingsContributions.savingsGoalId))
       .where(eq(savingsGoals.userId, user.id))
       .groupBy(savingsGoals.id)
       .orderBy(desc(savingsGoals.id));
@@ -143,19 +140,10 @@ function Dashboard() {
         relationshipType: familyLinks.relationshipType,
       })
       .from(familyLinks)
-      .innerJoin(
-        user,
-        or(
-          eq(user.id, familyLinks.linkedUserId),
-          eq(user.id, familyLinks.userId)
-        )
-      )
+      .innerJoin(user, or(eq(user.id, familyLinks.linkedUserId), eq(user.id, familyLinks.userId)))
       .where(
         and(
-          or(
-            eq(familyLinks.userId, user.id),
-            eq(familyLinks.linkedUserId, user.id)
-          ),
+          or(eq(familyLinks.userId, user.id), eq(familyLinks.linkedUserId, user.id)),
           eq(familyLinks.status, "accepted")
         )
       );
@@ -168,19 +156,14 @@ function Dashboard() {
 
   return (
     <div className="p-8 bg-">
-      <h2 className="font-bold text-4xl">Hi, Hunny 👋</h2>
-      <p className="text-gray-500">
-        Here's what happenning with your money, Lets Manage your expense
-      </p>
+      <h2 className="font-bold text-4xl">Hi, {user?.username || "There"} 👋</h2>
+      <p className="text-gray-500">Here's what happenning with your money, Lets Manage your expense</p>
 
       <CardInfo budgetList={budgetList} incomeList={incomeList} />
       <div className="grid grid-cols-1 lg:grid-cols-3 mt-6 gap-5">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 flex flex-col gap-5">
           <BarChartDashboard budgetList={budgetList} />
-          <ExpenseListTable
-            expensesList={expensesList}
-            refreshData={() => getBudgetList()}
-          />
+          <ExpenseListTable expensesList={expensesList} refreshData={() => getBudgetList()} />
           <SavingsGoalsSummary goals={savingsGoalsList} />
           <BillsSummary bills={billsList} />
           <FamilyLinksSummary links={familyLinksList} />
@@ -188,9 +171,7 @@ function Dashboard() {
         <div className="">
           <h2 className="font-bold text-lg">Latest Budgets</h2>
           {budgetList?.length > 0
-            ? budgetList.map((budget, index) => (
-                <BudgetItem budget={budget} key={index} />
-              ))
+            ? budgetList.map((budget, index) => <BudgetItem budget={budget} key={index} />)
             : [1, 2, 3, 4].map((item, index) => (
                 <div
                   className="h-[180xp] w-full

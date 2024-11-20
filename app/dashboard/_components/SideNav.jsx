@@ -71,11 +71,15 @@ function SideNav() {
   ];
   const router = useRouter();
   const path = usePathname();
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     console.log(path);
@@ -115,9 +119,7 @@ function SideNav() {
         <div className="flex w-full justify-between">
           <Avatar>
             <AvatarImage src="/avatar.jpg" />
-            <AvatarFallback>
-              {user?.username?.charAt(0).toUpperCase() || "H"}
-            </AvatarFallback>
+            <AvatarFallback>{user?.username?.charAt(0).toUpperCase() || "H"}</AvatarFallback>
           </Avatar>
 
           <Button
@@ -127,7 +129,7 @@ function SideNav() {
               for (const cookieName in allCookies) {
                 Cookies.remove(cookieName); // Remove each cookie
               }
-              localStorage.clear();
+              window && window.localStorage.clear();
               router.push("/");
             }}
           >

@@ -8,11 +8,15 @@ import IncomeItem from "./IncomeItem";
 
 function IncomeList() {
   const [incomelist, setIncomelist] = useState([]);
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     user && getIncomelist();

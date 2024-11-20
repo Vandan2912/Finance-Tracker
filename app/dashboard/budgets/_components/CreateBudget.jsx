@@ -26,14 +26,18 @@ function CreateBudget({ refreshData }) {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   /**
    * Used to Create New Budget
    */
   const onCreateBudget = async () => {
-    console.log("user", user, localStorage.getItem("user"));
+    console.log("user", user, window.localStorage.getItem("user"));
     const result = await db
       .insert(Budgets)
       .values({
@@ -68,11 +72,7 @@ function CreateBudget({ refreshData }) {
             <DialogTitle>Create New Budget</DialogTitle>
             <DialogDescription>
               <div className="mt-5">
-                <Button
-                  variant="outline"
-                  className="text-lg"
-                  onClick={() => setOpenEmojiPicker(!openEmojiPicker)}
-                >
+                <Button variant="outline" className="text-lg" onClick={() => setOpenEmojiPicker(!openEmojiPicker)}>
                   {emojiIcon}
                 </Button>
                 <div className="absolute z-20">
@@ -86,18 +86,11 @@ function CreateBudget({ refreshData }) {
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Budget Name</h2>
-                  <Input
-                    placeholder="e.g. Home Decor"
-                    onChange={(e) => setName(e.target.value)}
-                  />
+                  <Input placeholder="e.g. Home Decor" onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className="mt-2">
                   <h2 className="text-black font-medium my-1">Budget Amount</h2>
-                  <Input
-                    type="number"
-                    placeholder="e.g. 5000₹"
-                    onChange={(e) => setAmount(e.target.value)}
-                  />
+                  <Input type="number" placeholder="e.g. 5000₹" onChange={(e) => setAmount(e.target.value)} />
                 </div>
               </div>
             </DialogDescription>

@@ -12,8 +12,12 @@ export default function BillsList() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -23,18 +27,13 @@ export default function BillsList() {
 
   const fetchChilds = async () => {
     if (!user) return;
-    const fetchedAccounts = await db
-      .select()
-      .from(childrenAccounts)
-      .where(eq(childrenAccounts.parentUserId, user.id));
+    const fetchedAccounts = await db.select().from(childrenAccounts).where(eq(childrenAccounts.parentUserId, user.id));
     setAccounts(fetchedAccounts);
   };
 
   const addBill = async (newAccount) => {
     if (!user) return;
-    await db
-      .insert(childrenAccounts)
-      .values({ ...newAccount, parentUserId: user.id });
+    await db.insert(childrenAccounts).values({ ...newAccount, parentUserId: user.id });
     fetchChilds();
   };
 

@@ -2,12 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { db } from "@/utils/dbConfig";
 import { desc, eq, getTableColumns, sql } from "drizzle-orm";
-import {
-  Budgets,
-  Expenses,
-  savingsContributions,
-  savingsGoals,
-} from "@/utils/schema";
+import { Budgets, Expenses, savingsContributions, savingsGoals } from "@/utils/schema";
 import CreateGoal from "./CreateGoal";
 import GoalItem from "./GoalItem";
 
@@ -16,8 +11,12 @@ function GoalList() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   useEffect(() => {
     user && getBudgetList();
@@ -29,18 +28,11 @@ function GoalList() {
     const fetchedGoals = await db
       .select({
         ...getTableColumns(savingsGoals),
-        totalContributed: sql`sum(${savingsContributions.amount})`.mapWith(
-          Number
-        ),
-        totalContributions: sql`count(${savingsContributions.id})`.mapWith(
-          Number
-        ),
+        totalContributed: sql`sum(${savingsContributions.amount})`.mapWith(Number),
+        totalContributions: sql`count(${savingsContributions.id})`.mapWith(Number),
       })
       .from(savingsGoals)
-      .leftJoin(
-        savingsContributions,
-        eq(savingsGoals.id, savingsContributions.savingsGoalId)
-      )
+      .leftJoin(savingsContributions, eq(savingsGoals.id, savingsContributions.savingsGoalId))
       .where(eq(savingsGoals.userId, user?.id))
       .groupBy(savingsGoals.id);
     setGoalList(fetchedGoals);

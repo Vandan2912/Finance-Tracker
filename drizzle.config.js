@@ -3,8 +3,8 @@ export default {
   schema: "./utils/schema.jsx",
   out: "./drizzle",
   dbCredentials: {
-    url: "postgresql://Expense%20management_owner:p26ThwPRtfWn@ep-lingering-cell-a1r71n8j.ap-southeast-1.aws.neon.tech/Expense%20management?sslmode=require",
+    url: "postgresql://demo_owner:pMfi0ygrv4uL@ep-mute-water-a54psdhz.us-east-2.aws.neon.tech/demo?sslmode=require",
     connectionString:
-      "postgresql://Expense%20management_owner:p26ThwPRtfWn@ep-lingering-cell-a1r71n8j.ap-southeast-1.aws.neon.tech/Expense%20management?sslmode=require",
+      "postgresql://demo_owner:pMfi0ygrv4uL@ep-mute-water-a54psdhz.us-east-2.aws.neon.tech/demo?sslmode=require",
   },
 };

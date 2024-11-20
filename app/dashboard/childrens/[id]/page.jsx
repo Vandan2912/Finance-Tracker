@@ -22,19 +22,18 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import EditBill from "../_components/EditBill";
-import {
-  billPayments,
-  bills,
-  childrenAccounts,
-  childrenExpenses,
-} from "@/utils/schema";
+import { billPayments, bills, childrenAccounts, childrenExpenses } from "@/utils/schema";
 
 function BillScreen({ params }) {
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user") || {}));
-  }, [localStorage.getItem("user")]);
+    // Check if window is available and get user data
+    if (typeof window !== "undefined") {
+      const userData = JSON.parse(window.localStorage.getItem("user") || "{}");
+      setUser(userData);
+    }
+  }, []);
 
   const [childAccountInfo, setChildAccountInfo] = useState();
   const [expensesList, setExpensesList] = useState([]);
@@ -52,10 +51,7 @@ function BillScreen({ params }) {
         totalExpenses: sql`count(${childrenExpenses.id})`.mapWith(Number),
       })
       .from(childrenAccounts)
-      .leftJoin(
-        childrenExpenses,
-        eq(childrenAccounts.id, childrenExpenses.childAccountId)
-      )
+      .leftJoin(childrenExpenses, eq(childrenAccounts.id, childrenExpenses.childAccountId))
       .where(eq(childrenAccounts.parentUserId, user?.id))
       .where(eq(childrenAccounts.id, params.id))
       .groupBy(childrenAccounts.id);
@@ -98,10 +94,7 @@ function BillScreen({ params }) {
           Child
         </span>
         <div className="flex gap-2 items-center">
-          <EditBill
-            goalInfo={childAccountInfo}
-            refreshData={() => getChildAccountInfo()}
-          />
+          <EditBill goalInfo={childAccountInfo} refreshData={() => getChildAccountInfo()} />
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -113,16 +106,13 @@ function BillScreen({ params }) {
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your current goal along with contributions and remove your
-                  data from our servers.
+                  This action cannot be undone. This will permanently delete your current goal along with contributions
+                  and remove your data from our servers.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => deleteChildAccount()}>
-                  Continue
-                </AlertDialogAction>
+                <AlertDialogAction onClick={() => deleteChildAccount()}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -140,17 +130,10 @@ function BillScreen({ params }) {
             rounded-lg animate-pulse"
           ></div>
         )}
-        <AddBill
-          billid={params.id}
-          user={user}
-          refreshData={() => getChildAccountInfo()}
-        />
+        <AddBill billid={params.id} user={user} refreshData={() => getChildAccountInfo()} />
       </div>
       <div className="mt-4">
-        <ContributionListTable
-          expensesList={expensesList}
-          refreshData={() => getChildAccountInfo()}
-        />
+        <ContributionListTable expensesList={expensesList} refreshData={() => getChildAccountInfo()} />
       </div>
     </div>
   );
